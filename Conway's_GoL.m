@@ -1,4 +1,5 @@
 %création du plateau de jeu
+%Diego est passé par là
 q   =   input('taille du plateau? : ');
 
 n   =   input('pourcentage de cellules vivantes ? : ');
