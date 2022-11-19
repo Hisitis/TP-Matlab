@@ -13,7 +13,7 @@ s=s(1,1);
 
 %création des clusters
 
-k=6; %k correspond au nombre de cluster voulu
+k=4; %k correspond au nombre de cluster voulu
 cluster = rand(k,2)*100;
 scatter(cluster(:,1),cluster(:,2),'red','filled');
 
@@ -36,40 +36,42 @@ end
 Karl=Pomme;
 %création du vecteur Karl(détermine quel point appartient à quel cluster)
 
-for j=1:k
-    Banane=circshift(Poire,-j);
-    for i=1:s 
-        if Pomme(Poire(1,j),i)<Pomme(Banane(1,j),i)
-            Karl(Banane(1,j),i)=0;
-        elseif Pomme(Poire(1,j),i)>Pomme(Banane(1,j),i)
-            Karl(Poire(1,j),i)=0;
+for l=1:10*k
+    Banane=circshift(Poire,-l);
+    for j=1:k
+        for i=1:s 
+            if Pomme(Poire(1,j),i)<Pomme(Banane(1,j),i)
+                Karl(Banane(1,j),i)=0;
+            elseif Pomme(Poire(1,j),i)>Pomme(Banane(1,j),i)
+                Karl(Poire(1,j),i)=0;
+            end
         end
-    end
-end 
+    end 
+end
 
 %création des barycentres 1re génération
 
-bary=zeros(2,k);
+bary=zeros(k,2);
 count=0;
 for j=1:k
     for i=1:s
         if Karl(j,i)>0
-           bary(1,j)=bary(1,j)+A(i,1);
-           bary(2,j)=bary(2,j)+A(i,2);
+           bary(j,1)=bary(j,1)+A(i,1);
+           bary(j,2)=bary(j,2)+A(i,2);
            count=count+1;
         end
     end
-    bary(1,j)=bary(1,j)/count;
-    bary(2,j)=bary(2,j)/count;
+    bary(j,1)=bary(j,1)/count;
+    bary(j,2)=bary(j,2)/count;
     count=0;
 end
-scatter(bary(1,:),bary(2,:),'yellow','filled')
+scatter(bary(:,1),bary(:,2),'yellow','filled')
 
 %Certains barycentre peuvent avoir des coordonées indéterminées, si ça
 %arrive,ses coordonnées sont déterminées comme étant (inf,inf)
 for i=1:k
-    if isnan(bary(:,i))
-       bary(:,i)=inf;
+    if isnan(bary(i,:))
+       bary(i,:)=inf;
     end
 end
 
@@ -80,7 +82,7 @@ t=true;
 while t
     for j=1:k
         for i=1:s
-            Pom(j,i)=norm(A(i,:)-bary(:,j)); 
+            Pom(j,i)=norm(A(i,:)-bary(j,:)); 
     %Pom = stockage des distances des coo. Par rapport aux barycentres
         end
     end
@@ -93,42 +95,44 @@ while t
 
     Kar=Pom;
     %création du vecteur Kar(détermine quel point appartient à quel barycentre)
-
-    for j=1:k
-        Banane=circshift(Poire,-j);
-        for i=1:s 
-            if Pom(Poire(1,j),i)<Pom(Banane(1,j),i)
-                Kar(Banane(1,j),i)=0;
-            elseif Pom(Poire(1,j),i)>Pom(Banane(1,j),i)
-                Kar(Poire(1,j),i)=0;
+    for l=1:10*k
+        Banane=circshift(Poire,-l);
+        for j=1:k
+            for i=1:s 
+                if Pom(Poire(1,j),i)<Pom(Banane(1,j),i)
+                    Kar(Banane(1,j),i)=0;
+                elseif Pom(Poire(1,j),i)>Pom(Banane(1,j),i)
+                    Kar(Poire(1,j),i)=0;
+                end
             end
-        end
-    end 
-
+        end 
+       
+    end
+    
     %détermine l'emplacement des nouveaux barycentres
-    bary2=zeros(2,k);
+    bary2=zeros(k,2);
     count=0;
     for j=1:k
         for i=1:s
             if Kar(j,i)>0
-            bary2(1,j)=bary2(1,j)+A(i,1);
-            bary2(2,j)=bary2(2,j)+A(i,2);
+            bary2(j,1)=bary2(j,1)+A(i,1);
+            bary2(j,2)=bary2(j,2)+A(i,2);
             count=count+1;
             end
         end
-        bary2(1,j)=bary2(1,j)/count;
-        bary2(2,j)=bary2(2,j)/count;
+        bary2(j,1)=bary2(j,1)/count;
+        bary2(j,2)=bary2(j,2)/count;
         count=0;
     end
-    scatter(bary2(1,:),bary2(2,:),'cyan','filled')
+    scatter(bary2(:,1),bary2(:,2),'cyan','filled')
     for i=1:k
-        if isnan(bary2(:,i))
-            bary2(:,i)=inf;
+        if isnan(bary2(i,:))
+            bary2(i,:)=inf;
         end
     end
         if bary2==bary
             t=false;
-            scatter(bary2(1,:),bary2(2,:),'black','filled')
+            scatter(bary2(:,1),bary2(:,2),'black','filled')
         else
             bary=bary2;
         end
@@ -138,13 +142,13 @@ end
 
 count=0;
 for i=1:k
-    if bary(:,i)<inf
+    if bary(i,:)<inf
         count=count+1;
     end
 end
 
 %colorisation des différents clusters
-for j=1:k
+for j=1:count
     colours=zeros(s,2);
     s1=s;
     if Kar(j,:)==0
@@ -156,9 +160,20 @@ for j=1:k
             end
         end
     end
+    i=1;
+    while i<=s
+        if colours(i,:)==0
+            colours(i,:)=[];
+            s=s-1;
+        else
+            i=i+1;
+        end
+    end
     scatter(colours(:,1),colours(:,2),'d','filled');
+    s=s1;
+    colours=zeros(s,2);
 end
 
-scatter(bary2(1,:),bary2(2,:),'black','filled')
-disp(count) 
-disp(' est le nombre final de barycentres.')
+scatter(bary2(:,1),bary2(:,2),'black','filled') 
+x=['Le nombre final de cluster est ',num2str(count), '.'];
+disp(x)
