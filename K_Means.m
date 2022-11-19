@@ -94,7 +94,6 @@ while t
     Kar=Pom;
     %création du vecteur Kar(détermine quel point appartient à quel barycentre)
 
-
     for j=1:k
         Banane=circshift(Poire,-j);
         for i=1:s 
@@ -144,6 +143,7 @@ for i=1:k
     end
 end
 
+%colorisation des différents clusters
 for j=1:k
     colours=zeros(s,2);
     s1=s;
