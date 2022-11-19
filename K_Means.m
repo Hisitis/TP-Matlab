@@ -11,79 +11,52 @@ scatter(A(:,1),A(:,2),'blue','d',"filled")
 s=size(A);
 s=s(1,1);
 
-%création des clusters
+%création des barycentres 1re gén.
 
-k=4; %k correspond au nombre de cluster voulu
-cluster = rand(k,2)*100;
-scatter(cluster(:,1),cluster(:,2),'red','filled');
+k=6; %k correspond au nombre de bary voulu
+bary = rand(k,2)*100;
+scatter(bary(:,1),bary(:,2),'red','filled');
 
 Pomme=zeros(k,s);
 for j=1:k
     for i=1:s
-        Pomme(j,i)=norm(A(i,:)-cluster(j,:)); 
-%Pomme = stockage des distances des coo. Par rapport aux clusters
+        Pomme(j,i)=norm(A(i,:)-bary(j,:)); 
+%Pomme = stockage des distances des coo. Par rapport aux barycentres
     end
 end
 
 
-%détermination du cluster le plus proche de chaque points
+%détermination du bary le plus proche de chaque points
 
 Poire=zeros(1,k);
 for b=1:k
     Poire(1,b)=b;    
 end
 
-Karl=Pomme;
-%création du vecteur Karl(détermine quel point appartient à quel cluster)
+    Karl=Pomme;
+    %création du vecteur Karl(détermine quel point appartient à quel cluster)
 
-for l=1:10*k
-    Banane=circshift(Poire,-l);
-    for j=1:k
-        for i=1:s 
-            if Pomme(Poire(1,j),i)<Pomme(Banane(1,j),i)
-                Karl(Banane(1,j),i)=0;
-            elseif Pomme(Poire(1,j),i)>Pomme(Banane(1,j),i)
-                Karl(Poire(1,j),i)=0;
+    for l=1:10*k
+        Banane=circshift(Poire,-l);
+        for j=1:k
+            for i=1:s 
+                if Pomme(Poire(1,j),i)<Pomme(Banane(1,j),i)
+                    Karl(Banane(1,j),i)=0;
+                elseif Pomme(Poire(1,j),i)>Pomme(Banane(1,j),i)
+                    Karl(Poire(1,j),i)=0;
+                end
             end
-        end
-    end 
-end
-
-%création des barycentres 1re génération
-
-bary=zeros(k,2);
-count=0;
-for j=1:k
-    for i=1:s
-        if Karl(j,i)>0
-           bary(j,1)=bary(j,1)+A(i,1);
-           bary(j,2)=bary(j,2)+A(i,2);
-           count=count+1;
-        end
+        end 
     end
-    bary(j,1)=bary(j,1)/count;
-    bary(j,2)=bary(j,2)/count;
-    count=0;
-end
-scatter(bary(:,1),bary(:,2),'yellow','filled')
 
-%Certains barycentre peuvent avoir des coordonées indéterminées, si ça
-%arrive,ses coordonnées sont déterminées comme étant (inf,inf)
-for i=1:k
-    if isnan(bary(i,:))
-       bary(i,:)=inf;
-    end
-end
+%création des barycentres
 
-%création des barycentre de Ne génération
-
-Pom=zeros(k,s);
 t=true;
 while t
     for j=1:k
         for i=1:s
-            Pom(j,i)=norm(A(i,:)-bary(j,:)); 
-    %Pom = stockage des distances des coo. Par rapport aux barycentres
+            Pomme(j,i)=norm(A(i,:)-bary(j,:)); 
+    %Pomme = stockage des distances des coo. Par rapport aux barycentres
         end
     end
 
@@ -93,16 +66,16 @@ while t
         Poire(1,b)=b;    
     end
 
-    Kar=Pom;
-    %création du vecteur Kar(détermine quel point appartient à quel barycentre)
+    Karl=Pomme;
+    %création du vecteur Karl(détermine quel point appartient à quel barycentre)
     for l=1:10*k
         Banane=circshift(Poire,-l);
         for j=1:k
             for i=1:s 
-                if Pom(Poire(1,j),i)<Pom(Banane(1,j),i)
-                    Kar(Banane(1,j),i)=0;
-                elseif Pom(Poire(1,j),i)>Pom(Banane(1,j),i)
-                    Kar(Poire(1,j),i)=0;
+                if Pomme(Poire(1,j),i)<Pomme(Banane(1,j),i)
+                    Karl(Banane(1,j),i)=0;
+                elseif Pomme(Poire(1,j),i)>Pomme(Banane(1,j),i)
+                    Karl(Poire(1,j),i)=0;
                 end
             end
         end 
@@ -114,7 +87,7 @@ while t
     count=0;
     for j=1:k
         for i=1:s
-            if Kar(j,i)>0
+            if Karl(j,i)>0
             bary2(j,1)=bary2(j,1)+A(i,1);
             bary2(j,2)=bary2(j,2)+A(i,2);
             count=count+1;
@@ -151,10 +124,10 @@ end
 for j=1:count
     colours=zeros(s,2);
     s1=s;
-    if Kar(j,:)==0
+    if Karl(j,:)==0
     else
         for i=1:s
-            if Kar(j,i)==0
+            if Karl(j,i)==0
             else
                 colours(i,:)=A(i,:);
             end
