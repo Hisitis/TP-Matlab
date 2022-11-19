@@ -13,7 +13,7 @@ s=s(1,1);
 
 %création des barycentres 1re gén.
 
-k=6; %k correspond au nombre de bary voulu
+k=6; %k correspond au nombre de barycentres voulus
 bary = rand(k,2)*100;
 scatter(bary(:,1),bary(:,2),'red','filled');
 
