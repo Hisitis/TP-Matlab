@@ -94,18 +94,17 @@ while t
     Kar=Pom;
     %création du vecteur Kar(détermine quel point appartient à quel barycentre)
 
-    for l=1:k
-        Banane=circshift(Poire,-l);
-        for j=1:k
-            for i=1:s 
-                if Pom(Poire(1,j),i)<Pom(Banane(1,j),i)
-                    Kar(Banane(1,j),i)=0;
-                elseif Pom(Poire(1,j),i)>Pom(Banane(1,j),i)
-                    Kar(Poire(1,j),i)=0;
-                end
+
+    for j=1:k
+        Banane=circshift(Poire,-j);
+        for i=1:s 
+            if Pom(Poire(1,j),i)<Pom(Banane(1,j),i)
+                Kar(Banane(1,j),i)=0;
+            elseif Pom(Poire(1,j),i)>Pom(Banane(1,j),i)
+                Kar(Poire(1,j),i)=0;
             end
-        end 
-    end
+        end
+    end 
 
     %détermine l'emplacement des nouveaux barycentres
     bary2=zeros(2,k);
@@ -144,7 +143,6 @@ for i=1:k
         count=count+1;
     end
 end
-
 
 for j=1:k
     colours=zeros(s,2);
