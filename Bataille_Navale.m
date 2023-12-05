@@ -1,3 +1,8 @@
+% Ce document est accessible aux assistants Jean Clement et Nicolas Roy. Il est dans votre intérêt de ne pas le copier.
+% Ce programme est ma propriété. Copier ce document pourrait entraîner des conséquences sérieuses que vous ne devriez pas négliger.
+% Cordialement,
+% HENRY François
+
 %test Bataille navale
 
 clc
@@ -12,8 +17,6 @@ t=0;
 c=0;
 
 while t < 4
-
-
 
     if t==0
         b=4;
